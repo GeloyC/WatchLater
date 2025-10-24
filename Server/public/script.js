@@ -21,11 +21,6 @@ function createThumb() {
 
     const clean_embed_link = parseIframeAttributes(link_input);
 
-    // thumbnailList.push({
-    //     link: clean_embed_link.src,
-    //     title:clean_embed_link.title
-    // });
-
     fetch(`http://localhost:5000/yt_link`, {
         method: 'POST',
         headers: {
@@ -43,6 +38,8 @@ function createThumb() {
         .catch(error => {
             console.error('Error: ', error);
         });
+
+    window.location.reload();
 }
 
 
@@ -77,7 +74,7 @@ function displayNewVideo () {
 
 }
 
-displayNewVideo();
+
 
 
 const btn_addLink = document.querySelector('.button_addLink');
@@ -88,25 +85,9 @@ btn_addLink.addEventListener('click', () => {
     document.querySelector('.link_input').value = '';
 })
 
+displayNewVideo();
 
-
-
-// const YT_embed = '<iframe width="1731" height="656" src="https://www.youtube.com/embed/NiljDyzAOcI" title="The harsh reality of good software" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-
-// function parseIframeAttributes(iframe) {
-//     const regex = /(\w+)(?:="([^"]*)")?/g;
-//     const attrs = {};
-
-//     let match;
-
-//     while((match = regex.exec(iframe))) {
-//         const [, key, value ] = match;
-
-//         attrs[key] = value !== undefined ? value : true; 
-//     }
-
-//     return attrs;
-// }
-
-// const iframeObject = parseIframeAttributes(YT_embed);
+window.onload = (event) => {
+    displayNewVideo();
+};
 
