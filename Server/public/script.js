@@ -19,23 +19,19 @@ function clearLinkInput() {
 
 
 function displayNewVideo () {
-    const thumbnail = document.querySelector('.thumbnail_container');
+    const thumbnail = document.querySelector('.thumbnail');
     
 
     thumbnail.innerHTML = '';
-    thumbnailList.forEach((thumb) => {
-        const thumbnailBlock = document.createElement('div');
-        thumbnailBlock.classList.add('thumbnail');
-
+    thumbnailList.forEach((thumb, index) => {
         if (thumb.link !== '') {
-            const thumbnailFrame = document.createElement('iframe');
-            thumbnailFrame.classList.add('thumbnail_img_container');
-            thumbnailFrame.setAttribute('width', 420);
-            thumbnailFrame.setAttribute('height', 315);
-            thumbnailFrame.src = thumb.link;
+            const linkContainer = document.createElement('a');
+            linkContainer.classList.add('video_link');
+            linkContainer.href = thumb.link;
+            linkContainer.target = 'video_container';
 
-            thumbnailBlock.append(thumbnailFrame);
-            thumbnail.append(thumbnailBlock);
+            linkContainer.textContent = `Video ${index + 1}`
+            thumbnail.append(linkContainer);
         } else {
             console.log('Cant!')
         }
