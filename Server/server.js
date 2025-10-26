@@ -3,6 +3,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import db from './config/database.js';
 
+// Routes
+import user_route from './routes/User.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,6 +14,10 @@ const __dirname = path.dirname(__filename);
 
 app.use(express.static(path.join(__dirname, '/public')));
 app.use(express.json());
+
+
+// decale routes
+app.use('/user', user_route);
 
 
 app.get('/' , (req, res) => {
@@ -47,6 +53,27 @@ app.get('/yt_link_list', async (req, res) => {
         res.json(links)
     } catch(err) {  
         console.error('Failed to fetch links', err );
+    }
+});
+
+
+app.delete('/yt_link_delete/:link_id', async (req, res) => {
+    const { link_id } = req.params;
+
+    try {
+        const [link] = await db.query(
+            `DELETE FROM links WHERE link_id = ?`
+            , [link_id]
+        );
+
+        if (link.affectedRows === 0) {
+            return res.status(404).json({ error: 'Link not found!' });
+        }
+
+        res.json({ message: 'Deleted successfully' });
+    } catch(err) {
+        console.error('Failed to delete link: ', err);
+        res.status(500).json({ error: 'Failed to delete link' });
     }
 });
 
