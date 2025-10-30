@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import cors from 'cors'
 import { fileURLToPath } from 'url';
 import db from './config/database.js';
 
@@ -12,18 +13,16 @@ const PORT = process.env.PORT || 5000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5000',
+    credentials: false, // Disable credentials for non-cookie routes
+    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+}));
 
 
-// decale routes
 app.use('/user', user_route);
-
-
-app.get('/' , (req, res) => {
-    res.sendFile(path.join(__dirname, '/public', 'index.html'));
-});
-
 
 app.post('/yt_link', async (req, res) => {
     const { yt_link, yt_title } = req.body;
@@ -77,6 +76,25 @@ app.delete('/yt_link_delete/:link_id', async (req, res) => {
     }
 });
 
+
+app.get(/.*/, (req, res) => {
+    // Skip API routes
+    if (
+        req.path.startsWith('/user') ||
+        req.path.startsWith('/yt_link') ||
+        req.path === '/yt_link_list'
+    ) {
+        return res.status(404).json({ error: 'Route not found' });
+    }
+
+    // Skip static files (let express.static handle them)
+    if (/\.\w+$/.test(req.path)) {
+        return res.status(404).send();
+    }
+
+    // Serve SPA
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 
 app.listen(PORT, () => {

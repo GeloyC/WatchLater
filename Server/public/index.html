@@ -6,47 +6,54 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/assets/icons/favorite.png">
     <link rel="stylesheet" href="/index.css">
+    <link rel="stylesheet" href="/styling/login.css">
     <title>Watch Later</title>
 </head>
 
 <body>
     <div class="container">
         <div class="page_header">
-            <label class="page_title">WATCH LATER</label>
+            <a href="/" class="page_title">WATCH LATER</a>
+            <div class="user_settings">
+                <a href="/login" onclick="route()" class="user_login">Log in</a>
+                <a href="/register" onclick="route()" class="user_register">Register</a>
+                <label class="user_label">None</label>
+                <button class="user_logout">Exit</button>
+            </div>
         </div>
 
         <div class="content_container">
-        <div class="content">
+            <div class="content">
 
-            <!-- Inputs -->
-            <div class="input_container">
-            <div class="input_link">
-                <input type="text" name="" id="video_link_input" class="link_input">
-                <button type="button" class="button_addLink">Add</button>
+                <!-- Inputs -->
+                <!-- <div class="input_container">
+                    <div class="input_link">
+                        <input type="text" name="" id="video_link_input" class="link_input">
+                        <button type="button" class="button_addLink">Add</button>
+                    </div>
+                </div> -->
+
+
+                <!-- Thumbnail container -->
+                <!-- <div class="thumbnail_container">
+                    <div class="thumbnail">
+
+                    </div>
+
+                    <div class="iFrame_container">
+                        <iframe class="video_container" src="" name="video_container">
+                        </iframe>
+                        <label class="video_title">asdas</label>
+                    </div>
+                </div> -->
             </div>
-            </div>
-
-
-            <!-- Thumbnail container -->
-            <div class="thumbnail_container">
-                <div class="thumbnail">
-                    <!-- <a href="https://www.youtube.com/embed/rVcPtZEdRg4" target="video_container" id="a_src" class="video_link">
-                        Link 1
-                    </a> -->
-                </div>
-
-                <div class="iFrame_container">
-                    <iframe class="video_container" src="" name="video_container">
-                    </iframe>
-                    <label class="video_title">asdas</label>
-                </div>
-            </div>
-        </div>
         </div>
     </div>
 
 
-    <script src="/script.js"></script>
+    <!-- <script type="module" src="/script.js"></script> -->
+    <script type="module" src="/router.js"></script>
 </body>
 </html>

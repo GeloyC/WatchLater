@@ -1,124 +1,120 @@
-//  import { response } from "express";
+
 
 const url = 'http://localhost:5000';
 let thumbnailList = [];
 
-function createThumb() {
-    let link_input = document.querySelector('.link_input').value;
+export function initPageFunctions() {
+    function createThumb() {
+        let link_input = document.querySelector('.link_input').value;
 
-    function parseIframeAttributes(iframe) {
-        const regex = /(\w+)(?:="([^"]*)")?/g;
-        const attrs = {};
+        function parseIframeAttributes(iframe) {
+            const regex = /(\w+)(?:="([^"]*)")?/g;
+            const attrs = {};
 
-        let match;
+            let match;
 
-        while((match = regex.exec(iframe))) {
-            const [, key, value ] = match;
+            while((match = regex.exec(iframe))) {
+                const [, key, value ] = match;
 
-            attrs[key] = value !== undefined ? value : true; 
+                attrs[key] = value !== undefined ? value : true; 
+            }
+
+            return attrs;
         }
 
-        return attrs;
+        const clean_embed_link = parseIframeAttributes(link_input);
+
+        fetch(`${url}/yt_link`, {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            }, 
+            body: JSON.stringify({
+                yt_link: clean_embed_link.src,
+                yt_title: clean_embed_link.title
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+            });
+
+        window.location.reload();
     }
 
-    const clean_embed_link = parseIframeAttributes(link_input);
 
-    fetch(`${url}/yt_link`, {
-        method: 'POST',
-        headers: {
-            'Content-Type' : 'application/json'
-        }, 
-        body: JSON.stringify({
-            yt_link: clean_embed_link.src,
-            yt_title: clean_embed_link.title
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error: ', error);
-        });
+    function displayNewVideo () {
+        const thumbnail = document.querySelector('.thumbnail');
+        
+        
+        fetch(`${url}/yt_link_list`)
+            .then(response => response.json())
+            .then(data => {
+                thumbnail.innerHTML = '';
+                data.forEach((thumb, index) => {
+                    if (thumb.link !== '') {
+                        const linkWrapper = document.createElement('div');
+                        linkWrapper.classList.add('link_wrapper');
+                        linkWrapper.dataset.id = thumb.link_id;
+                        linkWrapper.dataset.title = thumb.video_title;
 
-    window.location.reload();
-}
+                        const linkContainer = document.createElement('a');
+                        linkContainer.classList.add('video_link');
+                        linkContainer.href = thumb.video_link;
+                        linkContainer.target = 'video_container';
+                        linkContainer.textContent = thumb.video_title;
 
+                        const button_delete = document.createElement('button');
+                        button_delete.classList.add('btn_delete_link');
+                        button_delete.textContent = 'DELETE'
+                        
 
-
-
-
-function displayNewVideo () {
-    const thumbnail = document.querySelector('.thumbnail');
-    
-    
-    fetch(`${url}/yt_link_list`)
-        .then(response => response.json())
-        .then(data => {
-            thumbnail.innerHTML = '';
-            data.forEach((thumb, index) => {
-                if (thumb.link !== '') {
-                    const linkWrapper = document.createElement('div');
-                    linkWrapper.classList.add('link_wrapper');
-                    linkWrapper.dataset.id = thumb.link_id;
-                    linkWrapper.dataset.title = thumb.video_title;
-
-                    const linkContainer = document.createElement('a');
-                    linkContainer.classList.add('video_link');
-                    linkContainer.href = thumb.video_link;
-                    linkContainer.target = 'video_container';
-                    linkContainer.textContent = thumb.video_title;
-
-                    const button_delete = document.createElement('button');
-                    button_delete.classList.add('btn_delete_link');
-                    button_delete.textContent = 'DELETE'
-                    
-
-                    thumbnail.append(linkWrapper);
-                    linkWrapper.append(linkContainer, button_delete);
+                        thumbnail.append(linkWrapper);
+                        linkWrapper.append(linkContainer, button_delete);
 
 
-                    button_delete.addEventListener('click', async () => {
-                        try {
-                            const response = await fetch(`${url}/yt_link_delete/${thumb.link_id}`, {
-                                method: 'DELETE',
-                                headers: {
-                                    'Content-Type' : 'application/json',
+                        button_delete.addEventListener('click', async () => {
+                            try {
+                                const response = await fetch(`${url}/yt_link_delete/${thumb.link_id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type' : 'application/json',
+                                    }
+                                })
+
+                                const data = await response.json();
+                                if (response.ok) {
+                                    console.log(data.message);
+                                    linkWrapper.remove();
+                                } else {
+                                    console.error('Delete failed:', data.error);
                                 }
-                            })
 
-                            const data = await response.json();
-                            if (response.ok) {
-                                console.log(data.message);
-                                linkWrapper.remove();
-                            } else {
-                                console.error('Delete failed:', data.error);
+                            } catch(err) {
+                                console.error('Error deleting link:', err);
                             }
 
-                        } catch(err) {
-                            console.error('Error deleting link:', err);
-                        }
+                            console.log('Delete button is working! for: ', thumb.link_id)
+                        })
 
-                        console.log('Delete button is working! for: ', thumb.link_id)
-                    })
+                        
 
-                    
-
-                } else {
-                    console.log('Cant!')
+                    } else {
+                        console.log('Cant!')
+                    }
                 }
-            }
-        )
-    })
-    .catch((err) => {
-        console.error('Error fetching data: ', err)
-    }); 
+            )
+        })
+        .catch((err) => {
+            console.error('Error fetching data: ', err)
+        }); 
 
-}
-
+    }
 
 
-document.addEventListener('DOMContentLoaded', () => {
     const currentVideoTitle = document.querySelector('.video_title');
     const videoDisplayer = document.querySelector('.video_container');
 
@@ -138,28 +134,59 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(youtubeUrl)
         
         const title = link.dataset.title || link.textContent.trim();
-        console.log('Video clicked:', title); // This WILL show now
+        console.log('Video clicked:', title); 
 
         currentVideoTitle.textContent = title;
     });
-});
 
 
+    const btn_addLink = document.querySelector('.button_addLink');
+    btn_addLink.addEventListener('click', () => {
+        
+        createThumb();
+        displayNewVideo();
+        document.querySelector('.link_input').value = '';
+    })
 
+    displayNewVideo();
 
-
-
-const btn_addLink = document.querySelector('.button_addLink');
-btn_addLink.addEventListener('click', () => {
+    window.onload = (event) => {
+        displayNewVideo();
+    };
     
-    createThumb();
-    displayNewVideo();
-    document.querySelector('.link_input').value = '';
-})
 
-displayNewVideo();
 
-window.onload = (event) => {
-    displayNewVideo();
-};
+
+    function displayUser() {
+        let user_current = document.querySelector('.user_label');
+        let btn_logn = document.querySelector('.user_login');
+        let btn_register = document.querySelector('.user_register');
+        let btn_logout = document.querySelector('.user_logout');
+
+        const user = JSON.parse(localStorage.getItem('user'))
+        if(user) {
+            btn_logn.style.display = 'none';
+            btn_register.style.display = 'none';
+            user_current.textContent = JSON.parse(localStorage.getItem('user'));
+            btn_logout.style.display = 'flex';
+        } else {
+            btn_logn.style.display = 'flex';
+            btn_register.style.display = 'flex';
+            user_current.style.display = 'none';
+            btn_logout.style.display = 'none';
+        }
+
+        
+    }
+
+    displayUser()
+
+    const btn_logout = document.querySelector('.user_logout');
+    btn_logout.addEventListener('click', () => {
+        localStorage.removeItem('user');
+        window.location.reload();
+    })
+
+}
+
 
