@@ -12,6 +12,11 @@ body {
     height: 100vh;
     width: 100vw;
     background-color: #2F2F2F;
+    background-image: url(assets/bg/bg.png);
+    background-repeat: repeat;
+    background-size: contain;
+    background-color: rgba(0, 0, 0, 0.5);
+    background-blend-mode: overlay;
 }
 
 button {
@@ -33,7 +38,7 @@ button {
     justify-content: space-between;
     align-items: text;
     background-color: #1f1f1f;
-    padding: 15px 15px 15px 15px;
+    padding: 15px 35px 15px 35px;
     width: 100%;
 }
 
@@ -77,9 +82,11 @@ button {
     align-items: center;
     border-style: none;
     height: 100%;
+    font-weight: bold;
     padding-inline: 1rem;
     border-radius: 0.5rem;
     cursor: pointer;
+    font-size: 16px;
 }
 .user_logout:hover {
     background-color: #BABABA;
@@ -99,8 +106,8 @@ button {
 .content_container {
     display: flex;
     flex-direction: column;
+    height: 100%;
     width: 100%;
-    padding-top: 2rem;
 }
 
 .content {
@@ -111,6 +118,7 @@ button {
     width: auto;
     height: 100%;
     gap: 2rem;
+    padding: 2rem;
 }
 
 .thumbnail_container {
@@ -118,8 +126,6 @@ button {
     grid-template-columns: 1fr 2fr;
     gap: 1rem;
     place-items: start;
-    width: 100rem;
-    padding: 0rem 3rem 0rem 3rem;
 }
 
 .thumbnail {
@@ -147,15 +153,13 @@ button {
 
 
 .input_container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100dvh;
+    align-self: start;
+    width: 550px;
 }
 
 .link_input {
     display: flex;
-    min-width: 100%;
+    width: 100%;
     font-size: large;
     padding: 1rem;
     border-radius: 1rem;
@@ -164,9 +168,9 @@ button {
 .input_link {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
+    align-items: start;
+    justify-content: start;
+    gap: 0.5rem;
     width: 100%;
 }
 
