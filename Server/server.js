@@ -25,12 +25,12 @@ app.use(cors({
 app.use('/user', user_route);
 
 app.post('/yt_link', async (req, res) => {
-    const { yt_link, yt_title } = req.body;
+    const { user_id, yt_link, yt_title } = req.body;
 
     try {
         const [yt_video] = await db.query(
-            `INSERT INTO links (video_link, video_title) VALUES (?, ?)`, 
-            [yt_link, yt_title]);
+            `INSERT INTO links (user_id, video_link, video_title) VALUES (?, ?, ?)`, 
+            [user_id, yt_link, yt_title]);
 
 
         res.json({

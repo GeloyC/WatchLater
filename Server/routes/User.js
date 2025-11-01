@@ -5,10 +5,12 @@ const user_route = express();
 user_route.use(express.json());
 
 
-user_route.get('/', async (req, res) => {
+user_route.get('/:user_id', async (req, res) => {
+    const { user_id } = req.params;
     try {
         const [response] = await db.query(
-            `SELECT * FROM links`
+            `SELECT * FROM links WHERE user_id = ?`
+            , [user_id]
         );
 
         res.json(response);
@@ -36,7 +38,7 @@ user_route.post('/login', async (req, res) => {
         }
 
         const [rows] = await db.query(
-            `SELECT * FROM users WHERE username = ? AND password = ?`,
+            `SELECT user_id, username FROM users WHERE username = ? AND password = ?`,
             [username, password]
         );
 
@@ -45,12 +47,15 @@ user_route.post('/login', async (req, res) => {
         }
 
         const user = rows[0];
-        console.log('Logged in successfully:', user.username);
+        console.log('Logged in good:', user.username, user.user_id);
 
         return res.status(200).json({
             message: 'Login successful',
-            user: { username: user.username }
+            user: {
+                user_id: user.user_id,
+                username: user.username }
         });
+
 
 
     } catch(err) {

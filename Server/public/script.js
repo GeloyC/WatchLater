@@ -1,7 +1,12 @@
-
-
 const url = 'http://localhost:5000';
 let thumbnailList = [];
+const user = JSON.parse(localStorage.getItem('user'))
+const input_addLink = document.querySelector('.input_link');
+if (!user) {
+    console.log('No user logged in!')
+    input_addLink.style.display = 'none';
+}
+
 
 export function initPageFunctions() {
     function createThumb() {
@@ -30,6 +35,7 @@ export function initPageFunctions() {
                 'Content-Type' : 'application/json'
             }, 
             body: JSON.stringify({
+                user_id: user.user_id,
                 yt_link: clean_embed_link.src,
                 yt_title: clean_embed_link.title
             })
@@ -45,12 +51,36 @@ export function initPageFunctions() {
         window.location.reload();
     }
 
+    function displayVideoViewer(videoLink, videoTitle) {
+        const iFrameContainer = document.querySelector('.iFrame_container');
+
+        // Create the iframe and title dynamically
+        const iframe_element = document.createElement('iframe');
+        iframe_element.classList.add('video_container');
+        iframe_element.name = 'video_container';
+        iframe_element.src = videoLink;
+
+        if (iframe_element.src === undefined) {
+            iframe_element.style.display = 'none';
+        }
+
+        const video_title_label = document.createElement('label');
+        video_title_label.classList.add('video_title');
+        video_title_label.textContent = videoTitle;
+
+        // Add them to the container
+        iFrameContainer.innerHTML = '';
+        iFrameContainer.append(iframe_element, video_title_label);
+    }
+
 
     function displayNewVideo () {
         const thumbnail = document.querySelector('.thumbnail');
+        if (!user) {
+            console.log('No user logged in!')
+        }
         
-        
-        fetch(`${url}/yt_link_list`)
+        fetch(`${url}/user/${user?.user_id}`)
             .then(response => response.json())
             .then(data => {
                 thumbnail.innerHTML = '';
@@ -75,6 +105,15 @@ export function initPageFunctions() {
                         thumbnail.append(linkWrapper);
                         linkWrapper.append(linkContainer, button_delete);
 
+                        linkContainer.addEventListener('click', (e) => {
+                            const iframe = document.querySelector('.video_container');
+                            if (!iframe) {
+                                e.preventDefault(); 
+                                displayVideoViewer(linkContainer.href, thumb.video_title);
+                            } else {
+                                linkContainer.target = 'video_container';
+                            }
+                        });
 
                         button_delete.addEventListener('click', async () => {
                             try {
@@ -92,7 +131,7 @@ export function initPageFunctions() {
                                 } else {
                                     console.error('Delete failed:', data.error);
                                 }
-
+                                displayVideoViewer();
                             } catch(err) {
                                 console.error('Error deleting link:', err);
                             }
@@ -112,16 +151,17 @@ export function initPageFunctions() {
             console.error('Error fetching data: ', err)
         }); 
 
+        
     }
 
 
     const currentVideoTitle = document.querySelector('.video_title');
     const videoDisplayer = document.querySelector('.video_container');
 
-    if (!currentVideoTitle) {
-        console.error('.video_title element not found!');
-        return;
-    }
+    // if (!currentVideoTitle) {
+    //     console.error('.video_title element not found!');
+    //     return;
+    // }
 
     // One listener for ALL .video_link clicks (even future ones)
     document.addEventListener('click', (e) => {
@@ -150,12 +190,12 @@ export function initPageFunctions() {
 
     displayNewVideo();
 
-    window.onload = (event) => {
-        displayNewVideo();
-    };
+
     
-
-
+    window.onload = () => {
+        displayVideoViewer();
+        displayNewVideo();
+    }
 
     function displayUser() {
         let user_current = document.querySelector('.user_label');
@@ -163,11 +203,12 @@ export function initPageFunctions() {
         let btn_register = document.querySelector('.user_register');
         let btn_logout = document.querySelector('.user_logout');
 
+
         const user = JSON.parse(localStorage.getItem('user'))
         if(user) {
             btn_logn.style.display = 'none';
             btn_register.style.display = 'none';
-            user_current.textContent = JSON.parse(localStorage.getItem('user'));
+            user_current.textContent = user.username
             btn_logout.style.display = 'flex';
         } else {
             btn_logn.style.display = 'flex';

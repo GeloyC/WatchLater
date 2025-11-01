@@ -27,9 +27,13 @@ export function userLogin() {
         .then(response => response.json())
         .then(data => {
             console.log('Sent data: ',  data);
-            localStorage.setItem('user', JSON.stringify(loginData.username));
+            localStorage.setItem('user', JSON.stringify(data.user));
         })
         .catch(err => console.error('Error sending formData: ', err)) 
+
+        fetch(`${url}/`)
+        .then(response => response.json())
+        .then()
 
         window.location.replace('/');
     });
