@@ -1,7 +1,5 @@
 console.log('Hello World!')
 
-// import { initPageFunctions } from "./script.js";
-
 const route = (event) => {
     event = event || window.event;
     event.preventDefault();
@@ -31,10 +29,9 @@ const handleLocation = async () => {
         const { userLogin } = await import("./scripts/login.js"); 
         userLogin();
     } else if (path === "/register") {
-        const { initPageFunctions } = await import("./script.js");
-        initPageFunctions();
+        const { registerUser } = await import("./scripts/register.js");
+        registerUser();
     }
-
 }
 
 

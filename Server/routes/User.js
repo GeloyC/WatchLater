@@ -19,15 +19,29 @@ user_route.get('/:user_id', async (req, res) => {
     }
 });
 
-// app.post('/signup', async (req, res) => {
-//     const { fullname, username, password } = req.body;
+user_route.post('/register', async (req, res) => {
+    const { fullname, username, password } = req.body;
 
-//     try {
+    try {
+        const [user] = await db.query(
+            `INSERT INTO users (fullname, username, password) VALUES (?, ?, ?)`
+            ,[fullname, username, password]
+        );
 
-//     } catch(err) {
 
-//     }
-// });
+        return res.status(200).json({
+            success: true,
+            user: {
+                user_id: user.insertId,
+                fullname: user.fullname,
+            },
+            message: 'Registration sucsessful!'
+        });
+
+    } catch(err) {
+        console.error('Failed to sign up: ', err);
+    }
+});
 
 user_route.post('/login', async (req, res) => {
     const { username, password } = req.body;

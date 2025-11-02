@@ -2,10 +2,12 @@ const url = 'http://localhost:5000';
 let thumbnailList = [];
 const user = JSON.parse(localStorage.getItem('user'))
 const input_addLink = document.querySelector('.input_link');
+const landingPage = document.querySelector('.landing_container');
 if (!user) {
     console.log('No user logged in!')
     input_addLink.style.display = 'none';
-}
+    landingPage.style.display = 'flex';
+} 
 
 
 export function initPageFunctions() {
@@ -69,7 +71,7 @@ export function initPageFunctions() {
         video_title_label.textContent = videoTitle;
 
         // Add them to the container
-        iFrameContainer.innerHTML = '';
+        iFrameContainer.innerHTML;
         iFrameContainer.append(iframe_element, video_title_label);
     }
 
@@ -110,6 +112,8 @@ export function initPageFunctions() {
                             if (!iframe) {
                                 e.preventDefault(); 
                                 displayVideoViewer(linkContainer.href, thumb.video_title);
+                                console.log(linkContainer.href, thumb.video_title);
+                                linksContainer();
                             } else {
                                 linkContainer.target = 'video_container';
                             }
@@ -117,7 +121,7 @@ export function initPageFunctions() {
 
                         button_delete.addEventListener('click', async () => {
                             try {
-                                const response = await fetch(`${url}/yt_link_delete/${thumb.link_id}`, {
+                                const response = await fetch(`${url}/yt_link_delete/${thumb.link_id}/${user.user_id}`, {
                                     method: 'DELETE',
                                     headers: {
                                         'Content-Type' : 'application/json',
@@ -131,7 +135,8 @@ export function initPageFunctions() {
                                 } else {
                                     console.error('Delete failed:', data.error);
                                 }
-                                displayVideoViewer();
+                                // displayVideoViewer();
+                                window.location.reload();
                             } catch(err) {
                                 console.error('Error deleting link:', err);
                             }
@@ -155,29 +160,35 @@ export function initPageFunctions() {
     }
 
 
-    const currentVideoTitle = document.querySelector('.video_title');
-    const videoDisplayer = document.querySelector('.video_container');
+    function linksContainer() {
+        const currentVideoTitle = document.querySelector('.video_title');
+        const videoDisplayer = document.querySelector('.video_container');
 
-    // if (!currentVideoTitle) {
-    //     console.error('.video_title element not found!');
-    //     return;
-    // }
+        // if (!currentVideoTitle) {
+        //     console.error('.video_title element not found!');
+        //     return;
+        // }
 
-    // One listener for ALL .video_link clicks (even future ones)
-    document.addEventListener('click', (e) => {
-        const link = e.target.closest('.video_link');
-        if (!link) return; // Not a .video_link
+        // One listener for ALL .video_link clicks (even future ones)
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('.video_link');
+            if (!link) return; // Not a .video_link
 
-        const youtubeUrl = link.getAttribute('href');
-        videoDisplayer.src = youtubeUrl;
+            const youtubeUrl = link.getAttribute('href');
+            if(!youtubeUrl) {
+                console.log('No youtube URL found!');
+            } else {
+                videoDisplayer.src = youtubeUrl;
+            }
 
-        console.log(youtubeUrl)
-        
-        const title = link.dataset.title || link.textContent.trim();
-        console.log('Video clicked:', title); 
+            console.log(youtubeUrl)
+            
+            const title = link.dataset.title || link.textContent.trim();
+            console.log('Video clicked:', title); 
 
-        currentVideoTitle.textContent = title;
-    });
+            currentVideoTitle.textContent = title;
+        });
+    }
 
 
     const btn_addLink = document.querySelector('.button_addLink');
@@ -188,45 +199,60 @@ export function initPageFunctions() {
         document.querySelector('.link_input').value = '';
     })
 
+
+
     displayNewVideo();
+    linksContainer()
 
 
     
     window.onload = () => {
-        displayVideoViewer();
+        linksContainer()
         displayNewVideo();
+        displayUser()
     }
 
     function displayUser() {
-        let user_current = document.querySelector('.user_label');
+        let user_settings_container = document.querySelector('.user_settings');
+
+        // let user_current = document.querySelector('.user_label');
         let btn_logn = document.querySelector('.user_login');
         let btn_register = document.querySelector('.user_register');
-        let btn_logout = document.querySelector('.user_logout');
+        // let btn_logout = document.querySelector('.user_logout');
 
 
-        const user = JSON.parse(localStorage.getItem('user'))
+        // const user = JSON.parse(localStorage.getItem('user'))
         if(user) {
             btn_logn.style.display = 'none';
             btn_register.style.display = 'none';
-            user_current.textContent = user.username
-            btn_logout.style.display = 'flex';
+
+            const user_current = document.createElement('label');
+            user_current.classList.add('user_label');
+            user_current.textContent = user?.username;
+
+            const btn_exit = document.createElement('button');
+            btn_exit.classList.add('user_logout');
+            btn_exit.textContent = 'Exit';
+
+            user_settings_container.innerHTML = '';
+            user_settings_container.append(user_current, btn_exit);
+
+
+            btn_exit.addEventListener('click', () => {
+                localStorage.removeItem('user');
+                window.location.reload();
+                displayUser();
+            })
         } else {
             btn_logn.style.display = 'flex';
             btn_register.style.display = 'flex';
-            user_current.style.display = 'none';
-            btn_logout.style.display = 'none';
-        }
+        } 
 
-        
+
     }
 
     displayUser()
 
-    const btn_logout = document.querySelector('.user_logout');
-    btn_logout.addEventListener('click', () => {
-        localStorage.removeItem('user');
-        window.location.reload();
-    })
 
 }
 

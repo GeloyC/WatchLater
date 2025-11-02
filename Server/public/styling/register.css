@@ -1,0 +1,52 @@
+.register_form_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.register_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 500px;
+}
+
+.register_header {
+    font-size: 36px;
+}
+
+.reg_fullname_container, .reg_username_container, .reg_password_container {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    width: 100%;
+}
+
+.reg_fullname, .reg_username, .reg_password {
+    width: 100%;
+    padding: 1rem;
+    font-size: 16px;
+    border-radius: 0.5rem;
+}
+
+.reg_button {
+    padding: 1rem;
+    padding: 1rem;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 1rem;
+    border-style: none;
+    cursor: pointer;
+}
+
+.reg_button:hover {
+    background-color: #BABABA;
+}
+.reg_button:active {
+    background-color: #FFF;
+}

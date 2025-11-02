@@ -56,20 +56,20 @@ app.get('/yt_link_list', async (req, res) => {
 });
 
 
-app.delete('/yt_link_delete/:link_id', async (req, res) => {
-    const { link_id } = req.params;
+app.delete('/yt_link_delete/:link_id/:user_id', async (req, res) => {
+    const { link_id, user_id } = req.params;
 
     try {
         const [link] = await db.query(
-            `DELETE FROM links WHERE link_id = ?`
-            , [link_id]
+            `DELETE FROM links WHERE link_id = ? and user_id = ?`
+            , [link_id, user_id]
         );
 
         if (link.affectedRows === 0) {
             return res.status(404).json({ error: 'Link not found!' });
         }
 
-        res.json({ message: 'Deleted successfully' });
+        res.json({ message: `Deleted successfully from user: ${user_id}`});
     } catch(err) {
         console.error('Failed to delete link: ', err);
         res.status(500).json({ error: 'Failed to delete link' });

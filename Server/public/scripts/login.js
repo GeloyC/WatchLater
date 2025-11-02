@@ -31,9 +31,6 @@ export function userLogin() {
         })
         .catch(err => console.error('Error sending formData: ', err)) 
 
-        fetch(`${url}/`)
-        .then(response => response.json())
-        .then()
 
         window.location.replace('/');
     });
