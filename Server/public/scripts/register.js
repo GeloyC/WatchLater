@@ -31,6 +31,8 @@ export function registerUser() {
         }).catch((err) => {
             console.error(err)
         });
+
+        window.location.replace('/login');
     });
 
 }
