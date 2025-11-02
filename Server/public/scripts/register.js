@@ -1,5 +1,6 @@
 export function registerUser() {
-    const url = 'http://localhost:5000';
+    // const url = 'http://localhost:5000';
+    const url = 'https://watch-later-ten.vercel.app';
     console.log('Register Page!')
 
     const input_fullname = document.querySelector('.reg_fullname');

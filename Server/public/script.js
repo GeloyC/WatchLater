@@ -1,4 +1,5 @@
-const url = 'http://localhost:5000';
+// const url = 'http://localhost:5000';
+const url = 'https://watch-later-ten.vercel.app';
 let thumbnailList = [];
 const user = JSON.parse(localStorage.getItem('user'))
 const input_addLink = document.querySelector('.input_link');
