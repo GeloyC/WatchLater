@@ -1,0 +1,10 @@
+
+{
+    "regions": ["fra1"], 
+    "functions": {
+        "/**/*.js": {
+        "memory": 512,
+        "maxDuration": 10
+        }
+    }
+}

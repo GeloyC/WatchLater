@@ -29,9 +29,10 @@ if (!global._vercel_mysql_pool) {
         password: process.env.DB_PASS,
         database: process.env.DB_NAME,
         waitForConnections: true,
-        connectionLimit: 2,  // reduce to stay below limit
+        connectionLimit: 2,
         queueLimit: 0,
-        enableKeepAlive: true, // helps prevent idle timeouts
+        enableKeepAlive: true,
+        ssl: { rejectUnauthorized: true } // 👈 Add this
     });
     console.log('✅ New MySQL connection pool created');
 }
