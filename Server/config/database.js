@@ -15,8 +15,6 @@ if (!global._vercel_mysql_pool) {
         waitForConnections: true,
         connectionLimit: 2,
         queueLimit: 0,
-        enableKeepAlive: true,
-        ssl: { rejectUnauthorized: true } // 👈 Add this
     });
     console.log('✅ New MySQL connection pool created');
 }
