@@ -29,11 +29,12 @@ export function userLogin() {
         .then(data => {
             console.log('Sent data: ',  data);
             localStorage.setItem('user', JSON.stringify(data.user));
+            window.location.replace('/');
         })
         .catch(err => console.error('Error sending formData: ', err)) 
 
 
-        window.location.replace('/');
+        
     });
 
 
