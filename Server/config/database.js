@@ -4,20 +4,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 
-let db;
-
-if (!global._vercel_mysql_pool) {
-    global._vercel_mysql_pool = mysql.createPool({
-        host: process.env.DB_HOST,
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: process.env.DB_NAME,
-        waitForConnections: true,
-        connectionLimit: 2,
-        queueLimit: 0,
-    });
-    console.log('✅ New MySQL connection pool created');
-}
-
-db = global._vercel_mysql_pool;
+const db = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+});
 export default db;
