@@ -1,7 +1,5 @@
 {
-    "functions": {
-        "**/*.js": {
-        "runtime": "nodejs18.x"
-        }
-    }
+    "builds": [
+        { "src": "package.json", "use": "@vercel/node" }
+    ]
 }
